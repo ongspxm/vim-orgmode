@@ -89,7 +89,7 @@ class Agenda(object):
 		for f in agenda_files:
 			f = glob.glob(os.path.join(
 				os.path.expanduser(os.path.dirname(f)),
-				os.path.basename(f)))
+				os.path.basename(f)), recursive=True)
 			resolved_files.extend(f)
 
 		agenda_files = [os.path.realpath(f) for f in resolved_files]
