@@ -92,7 +92,7 @@ class Agenda(object):
 				os.path.basename(f)), recursive=True)
 			resolved_files.extend(f)
 
-		agenda_files = [os.path.realpath(f) for f in resolved_files]
+		agenda_files = [os.path.realpath(f) for f in set(resolved_files)]
 
 		# load the agenda files into buffers
 		for agenda_file in agenda_files:
