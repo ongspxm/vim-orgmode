@@ -224,7 +224,71 @@ class Date(object):
             return startdate
 
     @classmethod
-    def insert_timestamp(cls, active=True):
+    def insert_timestamp_header(self, datetype):
+        """
+        with headers
+        """
+        tstamp = self.insert_timestamp(writeout=False)
+
+        d = ORGMODE.get_document(allow_dirty=True)
+        heading = d.find_current_heading()
+        body = heading.body
+
+        info = {}
+        if len(body):
+            firstline = body[0]
+
+            # will do all the checks and stuff
+            try:
+                if not firstline.startswith(' '):
+                    parts = [f.split(': ') for f in
+                            firstline.strip().replace(']', '>').split('>') if f]
+
+                    for k, v in parts:
+                        k = k.strip()
+                        if k!=k.upper(): raise
+
+                        if v[0] == '<': v += '>'
+                        elif v[0] == '[': v += ']'
+                        else: raise
+                        info[k] = v
+                    body.pop(0)
+            except:
+                info = {}
+
+        # clean up newlines
+        while len(body) and len(body[0].strip())==0:
+            body.pop(0)
+        while len(body) and len(body[-1].strip())==0:
+            body.pop()
+
+        info[datetype] = tstamp
+        heading.body = [' '.join([f"{k}: {info[k]}" for k in info]), ''] + body + ['']
+        d.write_heading(heading)
+
+    @classmethod
+    def insert_timestamp_with_calendar(cls, active=True):
+        u"""
+        Insert a timestamp at the cursor position.
+        Show fancy calendar to pick the date from.
+
+        TODO: add all modifier of orgmode.
+        """
+        if int(vim.eval(u_encode(u'exists(":CalendarH")'))) != 2:
+            vim.command("echo 'Please install plugin Calendar to enable this function'")
+            return
+        vim.command("CalendarH")
+        # backup calendar_action
+        calendar_action = vim.eval("g:calendar_action")
+        vim.command("let g:org_calendar_action_backup = '" + calendar_action + "'")
+        vim.command("let g:calendar_action = 'CalendarAction'")
+
+        timestamp_template = u'<%s>' if active else u'[%s]'
+        # timestamp template
+        vim.command("let g:org_timestamp_template = '" + timestamp_template + "'")
+
+    @classmethod
+    def insert_timestamp(cls, active=True, writeout=True):
         u"""
         Insert a timestamp at the cursor position.
 
@@ -253,28 +317,11 @@ class Date(object):
                 u_decode(u_encode(u'%Y-%m-%d %a')))
         timestamp = u'<%s>' % newdate if active else u'[%s]' % newdate
 
-        insert_at_cursor(timestamp)
+        if writeout:
+            insert_at_cursor(timestamp)
 
-    @classmethod
-    def insert_timestamp_with_calendar(cls, active=True):
-        u"""
-        Insert a timestamp at the cursor position.
-        Show fancy calendar to pick the date from.
-
-        TODO: add all modifier of orgmode.
-        """
-        if int(vim.eval(u_encode(u'exists(":CalendarH")'))) != 2:
-            vim.command("echo 'Please install plugin Calendar to enable this function'")
-            return
-        vim.command("CalendarH")
-        # backup calendar_action
-        calendar_action = vim.eval("g:calendar_action")
-        vim.command("let g:org_calendar_action_backup = '" + calendar_action + "'")
-        vim.command("let g:calendar_action = 'CalendarAction'")
-
-        timestamp_template = u'<%s>' if active else u'[%s]'
-        # timestamp template
-        vim.command("let g:org_timestamp_template = '" + timestamp_template + "'")
+        print('DONE')
+        return timestamp
 
     def register(self):
         u"""
@@ -310,9 +357,21 @@ class Date(object):
             function=u'%s ORGMODE.plugins[u"Date"].insert_timestamp_with_calendar(False)' % VIM_PY_CALL,
             menu_desrc=u'Timestamp with Calendar(inactive)'
         )
+        add_cmd_mapping_menu(
+            self,
+            name=u'OrgDateInsertTimestampHeaderSchedule',
+            key_mapping=u'<localleader>cs',
+            function=u'%s ORGMODE.plugins[u"Date"].insert_timestamp_header("SCHEDULED")' % VIM_PY_CALL,
+            menu_desrc=u'Timestamp with Calendar(inactive)'
+        )
+        add_cmd_mapping_menu(
+            self,
+            name=u'OrgDateInsertTimestampHeaderDeadline',
+            key_mapping=u'<localleader>cd',
+            function=u'%s ORGMODE.plugins[u"Date"].insert_timestamp_header("DEADLINE")' % VIM_PY_CALL,
+            menu_desrc=u'Timestamp with Calendar(inactive)'
+        )
 
         submenu = self.menu + Submenu(u'Change &Date')
         submenu + ActionEntry(u'Day &Earlier', u'<C-x>', u'<C-x>')
         submenu + ActionEntry(u'Day &Later', u'<C-a>', u'<C-a>')
-
-# vim: set noexpandtab:

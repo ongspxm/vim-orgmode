@@ -342,5 +342,3 @@ class Todo(object):
         settings.set(u'org_todo_prompt_position', u'botright')
 
         vim.command(u_encode(u'au orgmode BufReadCmd org:todo/* %s ORGMODE.plugins[u"Todo"].init_org_todo()' % VIM_PY_CALL))
-
-# vim: set noexpandtab:

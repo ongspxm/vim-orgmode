@@ -169,6 +169,8 @@ via the 'Org' menu. Most are only usable in command mode.
     <localleader>si     - insert inactive date
     <localleader>pa     - insert date by using calendar selection
     <localleader>pi     - insert inactive date by using calendar selection
+    <localleader>cs     - insert schedule to header
+    <localleader>cd     - insert deadline to header
 
   Agenda:~
     <localleader>caa    - agenda for the week
@@ -214,15 +216,15 @@ INSTALLATION AND UPGRADE                                 *orgguide-installation*
 
   Installation can be done with plugin managers, e.g. vim-plug
   (https://github.com/junegunn/vim-plug), dein.vim
-  (https://github.com/Shougo/dein.vim), pathogen.vim 
+  (https://github.com/Shougo/dein.vim), pathogen.vim
   (https://github.com/tpope/vim-pathogen) or if you're using Vim >= 8.0, you
   can use the built-in plugin manager.
 
-  Add the following to your .vimrc, for *vim-plug* : 
+  Add the following to your .vimrc, for *vim-plug* :
 >
     Plug 'jceb/vim-orgmode'
 <
-  And for *dein.vim* : 
+  And for *dein.vim* :
 >
     call dein#add('jceb/vim-orgmode')
 <
