@@ -222,11 +222,14 @@ class Date(object):
 			return startdate
 
 	@classmethod
-	def insert_timestamp_header(self, datetype):
+	def insert_timestamp_header(self, datetype, now=False, remove=False):
 		"""
 		with headers
 		"""
-		tstamp = self.insert_timestamp(writeout=False)
+		tstamp = ''
+		if not remove:
+			tstamp = (self.insert_timestamp(writeout=False) if not now else
+					datetime.now().strftime('[%Y-%M-%d %a %H:%M]').upper())
 
 		d = ORGMODE.get_document(allow_dirty=True)
 		heading = d.find_current_heading()
@@ -265,7 +268,11 @@ class Date(object):
 			body.pop()
 
 		info[datetype] = tstamp
-		heading.body = [' '.join([f"{k}: {info[k]}" for k in info]), ''] + body + ['']
+		if remove:
+			del info[datetype]
+
+		heading.body = ([' '.join([f"{k}: {info[k]}" for k in sorted(info.keys())]), ''] +
+				body + [''])
 		d.write_heading(heading)
 
 	@classmethod
