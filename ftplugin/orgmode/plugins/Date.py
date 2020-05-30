@@ -334,7 +334,7 @@ class Date(object):
 		if writeout:
 			insert_at_cursor(timestamp)
 
-		print('DONE')
+		print(' [DONE]')
 		return timestamp
 
 	def register(self):
