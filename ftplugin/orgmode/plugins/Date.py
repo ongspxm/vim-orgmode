@@ -261,18 +261,23 @@ class Date(object):
 			except:
 				info = {}
 
-		# clean up newlines
+		# clean up newlines at head
 		while len(body) and len(body[0].strip()) == 0:
 			body.pop(0)
-		while len(body) and len(body[-1].strip()) == 0:
-			body.pop()
 
 		info[datetype] = tstamp
 		if remove:
 			del info[datetype]
-
-		heading.body = ([' '.join([f"{k}: {info[k]}" for k in sorted(info.keys())]), ''] +
+		body = ([' '.join([f"{k}: {info[k]}" for k in sorted(info.keys())]), ''] +
 				body + [''])
+
+		# clean up newlines at end, and spacing if there is content
+		while len(body) and len(body[-1].strip()) == 0:
+			body.pop()
+		if len(body):
+			body.append('')
+
+		heading.body = (body)
 		d.write_heading(heading)
 
 	@classmethod
