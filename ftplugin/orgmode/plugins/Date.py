@@ -264,18 +264,18 @@ class Date(object):
 		# clean up newlines at head
 		while len(body) and len(body[0].strip()) == 0:
 			body.pop(0)
+		while len(body) and len(body[-1].strip()) == 0:
+			body.pop()
 
 		info[datetype] = tstamp
 		if remove:
 			del info[datetype]
-		body = ([' '.join([f"{k}: {info[k]}" for k in sorted(info.keys())]), ''] +
-				body + [''])
+		firstline = ' '.join([f"{k}: {info[k]}" for k in sorted(info.keys())])
 
-		# clean up newlines at end, and spacing if there is content
-		while len(body) and len(body[-1].strip()) == 0:
-			body.pop()
 		if len(body):
 			body.append('')
+		if firstline:
+			body = [firstline, '']+body
 
 		heading.body = (body)
 		d.write_heading(heading)
