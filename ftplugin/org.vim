@@ -27,7 +27,7 @@ if ! exists('b:did_ftplugin')
 	" default emacs settings
 	setlocal comments=fb:*,b:#,fb:-
 	setlocal commentstring=#\ %s
-	setlocal conceallevel=2 concealcursor=nc
+	setlocal conceallevel=0 concealcursor=nc
 	" original emacs settings are: setlocal tabstop=6 shiftwidth=6, but because
 	" of checkbox indentation the following settings are used:
 	setlocal tabstop=6 shiftwidth=6
