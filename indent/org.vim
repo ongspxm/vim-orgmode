@@ -3,9 +3,9 @@ if !exists("g:org_indent")
   let g:org_indent = 0
 endif
 
-setlocal foldtext=GetOrgFoldtext()
+setlocal foldtext=GetOrgFoldtextSimplified()
 setlocal fillchars-=fold:-
-setlocal fillchars+=fold:\ 
+"setlocal fillchars+=fold:\
 setlocal foldexpr=GetOrgFolding()
 setlocal foldmethod=expr
 setlocal indentexpr=GetOrgIndent()
@@ -130,4 +130,10 @@ EOF
 		endif
 		return l:tmp
 	endif
+endfunction
+
+function! GetOrgFoldtextSimplified()
+	let cnt = v:foldend - v:foldstart
+	let line = getline(v:foldstart)
+	return getline(v:foldstart).'   +'.cnt
 endfunction
