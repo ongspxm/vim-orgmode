@@ -189,9 +189,8 @@ class Agenda(object):
 
 			bufname = os.path.basename(vim.buffers[h.document.bufnr].name)
 			bufname = bufname[:-4] if bufname.endswith(u'.org') else bufname
-			formated = u"  %(bufname)s (%(bufnr)d)  %(todo)s  %(title)s" % {
+			formated = u"%(todo)+8s  %(bufname)-10s %(title)s" % {
 				'bufname': bufname,
-				'bufnr': h.document.bufnr,
 				'todo': h.todo,
 				'title': h.title
 			}
