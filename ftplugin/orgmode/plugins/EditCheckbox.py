@@ -53,7 +53,7 @@ class EditCheckbox(object):
 
 		# default checkbox level
 		# make it align with the 4-space tabbing
-		level = h.level + 3
+		level = 4
 
 		start = vim.current.window.cursor[0] - 1
 		# if no checkbox is found, insert at current line with indent level=1
