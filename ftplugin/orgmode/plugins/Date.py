@@ -231,6 +231,9 @@ class Date(object):
 			tstamp = (self.insert_timestamp(writeout=False) if not now else
 					datetime.now().strftime('[%Y-%M-%d %a %H:%M]').upper())
 
+		if not tstamp:
+			return
+
 		d = ORGMODE.get_document(allow_dirty=True)
 		heading = d.find_current_heading()
 		body = heading.body
@@ -273,9 +276,9 @@ class Date(object):
 		firstline = ' '.join([f"{k}: {info[k]}" for k in sorted(info.keys())])
 
 		if len(body):
-			body.append('')
+			body.insert(0, '')
 		if firstline:
-			body = [firstline, '']+body
+			body = [firstline]+body
 
 		heading.body = (body)
 		d.write_heading(heading)
