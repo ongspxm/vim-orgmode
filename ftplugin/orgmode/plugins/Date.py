@@ -229,7 +229,7 @@ class Date(object):
 		tstamp = ''
 		if not remove:
 			tstamp = (self.insert_timestamp(writeout=False) if not now else
-					datetime.now().strftime('[%Y-%M-%d %a %H:%M]').upper())
+					datetime.now().strftime('[%Y-%m-%d %a %H:%M]').upper())
 
 		if not tstamp:
 			return
