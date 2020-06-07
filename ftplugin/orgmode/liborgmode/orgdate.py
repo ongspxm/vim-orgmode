@@ -188,7 +188,7 @@ class OrgDate(datetime.date):
 	def __init__(self, active, year, month, day, repeater=''):
 		self.active = active
 		self.repeater = repeater
-		pass
+		self.printall = False
 
 	def __new__(cls, active, year, month, day, repeater=''):
 		return datetime.date.__new__(cls, year, month, day)
@@ -198,7 +198,7 @@ class OrgDate(datetime.date):
 		Return a string representation.
 		"""
 		inner = '%Y-%m-%d %a'
-		if self.repeater:
+		if self.repeater and self.printall:
 			inner += ' '+self.repeater
 
 		if self.active:

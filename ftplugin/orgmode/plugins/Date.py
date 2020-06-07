@@ -241,7 +241,7 @@ class Date(object):
 			currdate = date.today() if repeater[0] == '.' else scheduled
 			newdate = get_orgdate('<%s Abc %s>'%(
 				self._modify_time(currdate, repeater[1:]), repeater))
-			print(newdate)
+			newdate.printall = True
 
 			self.insert_timestamp_header(datetype2, usetime=newdate)
 			return True
