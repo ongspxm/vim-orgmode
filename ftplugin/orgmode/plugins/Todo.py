@@ -221,21 +221,22 @@ class Todo(object):
 		if not heading:
 			return
 
+		# toggle to scheduled dates
+		if ORGMODE.plugins.get("Date"):
+			isdone, next_state = False, ''
+			todos = d.get_todo_states()
+			for t in todos:
+				if not isdone and state in t[1]:
+					isdone = True
+					next_state = t[0][0]
+			if ORGMODE.plugins["Date"].update_todo_timestamp(isdone):
+				state = next_state
+
 		current_state = heading.todo
 
 		# set new headline
 		heading.todo = state
 		d.write_heading(heading)
-
-		# toggle to closed
-		if ORGMODE.plugins.get("Date"):
-			isdone = False
-			todos = d.get_todo_states()
-			for t in todos:
-				if state in t[1]:
-					isdone = True
-			ORGMODE.plugins["Date"].insert_timestamp_header("CLOSED",
-					now=True, remove=(not isdone))
 
 		# move cursor along with the inserted state only when current position
 		# is in the heading; otherwite do nothing
