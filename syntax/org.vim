@@ -232,6 +232,9 @@ unlet! s:todo_headings
 "<2003-09-16 Tue>
 "<2003-09-16 Sáb>
 syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \k\k\k>\)/
+"<2003-09-16 Tue ++1m>
+"<2003-09-16 Tue .+12d>
+syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \k\k\k [.+][-+]\d\d*\k>\)/
 "<2003-09-16 Tue 12:00>
 syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \k\k\k \d\d:\d\d>\)/
 "<2003-09-16 Tue 12:00-12:30>
