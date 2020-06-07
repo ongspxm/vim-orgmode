@@ -32,6 +32,9 @@ _DATE_REGEX = re.compile(r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w>", re.UNICODE)
 # [2011-09-12 Mon]
 _DATE_PASSIVE_REGEX = re.compile(r"\[(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w\]", re.UNICODE)
 
+# <2011-09-12 Mon .+2w> or <2011-09-12 Mon ++2m>
+_DATE_REPEAT_REGEX = re.compile(r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w ([.+]\+[\d]+\w)>", re.UNICODE)
+
 # <2011-09-12 Mon 10:20>
 _DATETIME_REGEX = re.compile(
 	r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d{1,2}):(\d\d)>", re.UNICODE)
@@ -162,6 +165,15 @@ def _text2orgdate(string):
 		except BaseException:
 			return None
 
+	# handle repeated dates
+	result = _DATE_REPEAT_REGEX.search(string)
+	if result:
+		try:
+			year, month, day, repeater = result.groups()
+			return OrgDate(True, int(year), int(month), int(day), repeater)
+		except BaseException:
+			return None
+
 
 class OrgDate(datetime.date):
 	u"""
@@ -173,11 +185,12 @@ class OrgDate(datetime.date):
 	See: http://docs.python.org/reference/datamodel.html#object.__new__
 	"""
 
-	def __init__(self, active, year, month, day):
+	def __init__(self, active, year, month, day, repeater=''):
 		self.active = active
+		self.repeater = repeater
 		pass
 
-	def __new__(cls, active, year, month, day):
+	def __new__(cls, active, year, month, day, repeater=''):
 		return datetime.date.__new__(cls, year, month, day)
 
 	def __unicode__(self):
