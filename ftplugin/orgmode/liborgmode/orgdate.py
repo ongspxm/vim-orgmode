@@ -33,7 +33,7 @@ _DATE_REGEX = re.compile(r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w>", re.UNICODE)
 _DATE_PASSIVE_REGEX = re.compile(r"\[(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w\]", re.UNICODE)
 
 # <2011-09-12 Mon .+2w> or <2011-09-12 Mon ++2m>
-_DATE_REPEAT_REGEX = re.compile(r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w ([.+]\+[\d]+\w)>", re.UNICODE)
+_DATE_REPEAT_REGEX = re.compile(r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w ([.+][+-][\d]+\w)>", re.UNICODE)
 
 # <2011-09-12 Mon 10:20>
 _DATETIME_REGEX = re.compile(
@@ -197,10 +197,14 @@ class OrgDate(datetime.date):
 		u"""
 		Return a string representation.
 		"""
+		inner = '%Y-%m-%d %a'
+		if self.repeater:
+			inner += ' '+self.repeater
+
 		if self.active:
-			return self.strftime(u'<%Y-%m-%d %a>')
+			return self.strftime('<%s>'%(inner))
 		else:
-			return self.strftime(u'[%Y-%m-%d %a]')
+			return self.strftime('[%s]'%(inner))
 
 	def __str__(self):
 		return u_encode(self.__unicode__())
