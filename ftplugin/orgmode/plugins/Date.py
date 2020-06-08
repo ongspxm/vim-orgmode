@@ -308,8 +308,6 @@ class Date(object):
 			del info[datetype]
 		firstline = ' '.join([f"{k}: {info[k]}" for k in sorted(info.keys())])
 
-		if len(body):
-			body.insert(0, '')
 		if firstline:
 			body = [firstline]+body
 
