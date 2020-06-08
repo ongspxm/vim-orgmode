@@ -17,12 +17,15 @@ u"""
 from datetime import datetime
 from datetime import timedelta
 
-
 try:
 	from itertools import ifilter as filter
 except:
 	pass
 
+# used for putting date to empty "NEXT" agenda
+from orgmode.liborgmode.orgdate import OrgDate
+today = datetime.today().date()
+today = OrgDate(True, today.year, today.month, today.day)
 
 def filter_items(headings, filters):
 	u""" Filter the given headings.
@@ -64,6 +67,10 @@ def is_within_week_and_active_todo(heading):
 		bool: True if heading contains an active TODO and the date is within a
 			week.
 	"""
+	if heading.todo == 'NEXT':
+		if not heading.active_date:
+			heading.active_date = today
+		return True
 	return is_within_week(heading) and contains_active_todo(heading)
 
 
