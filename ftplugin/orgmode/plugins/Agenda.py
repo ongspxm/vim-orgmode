@@ -167,32 +167,40 @@ class Agenda(object):
 		#     line in agenda buffer --> source document
 		# It's easy to jump to the right document this way
 		cls.line2doc = {}
+
 		# format text for agenda
-		last_date = raw_agenda[0].active_date
-		final_agenda = [u'Week Agenda:', unicode(last_date)]
+		raw_agenda = sorted(raw_agenda, key=lambda x: x.active_date.strftime('%s'))
+
+		final_agenda, last_date = [u'Week Agenda:'], ''
 		for i, h in enumerate(raw_agenda):
 			# insert date information for every new date (not datetime)
-			if unicode(h.active_date)[1:11] != unicode(last_date)[1:11]:
+			section = h.active_date.strftime('<%F %a>')
+			if section != last_date:
 				today = date.today()
+
 				# insert additional "TODAY" string
+				today_flag = ''
 				if h.active_date.year == today.year and \
 					h.active_date.month == today.month and \
 					h.active_date.day == today.day:
-					section = unicode(h.active_date) + u" TODAY"
+					today_flag = u" TODAY"
 					today_row = len(final_agenda) + 1
-				else:
-					section = unicode(h.active_date)
-				final_agenda.append(section)
+				final_agenda.append(section + today_flag)
 
 				# update last_date
-				last_date = h.active_date
+				last_date = section
 
 			bufname = os.path.basename(vim.buffers[h.document.bufnr].name)
 			bufname = bufname[:-4] if bufname.endswith(u'.org') else bufname
-			formated = u"%(todo)+8s  %(bufname)-10s %(title)s" % {
+
+			tstamp = h.active_date.strftime('%H:%M')
+			if tstamp == '00:00':
+				tstamp = '-----'
+			formated = u"%(todo)+8s  %(bufname)-10s %(tstamp)s %(title)s"  % {
 				'bufname': bufname,
 				'todo': h.todo,
-				'title': h.title
+				'title': h.title,
+				'tstamp': tstamp
 			}
 			final_agenda.append(formated)
 			cls.line2doc[len(final_agenda)] = (get_bufname(h.document.bufnr), h.document.bufnr, h.start)
